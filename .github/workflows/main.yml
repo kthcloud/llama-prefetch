@@ -3,6 +3,7 @@ name: kthcloud-ci
   push:
     branches:
     - main
+  workflow_dispatch:
 jobs:
   docker:
     runs-on: ubuntu-latest
