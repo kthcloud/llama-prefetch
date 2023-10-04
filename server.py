@@ -33,6 +33,13 @@ def query():
 
     return json.dumps(latest_query)
 
+@app.route('/')
+def index():
+    return "llama-prefetch"
+
+@app.route('/healthz')
+def healthz():
+    return "ok"
 
 def fetch_query():
     global latest_query, fetching
