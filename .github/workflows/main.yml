@@ -3,6 +3,7 @@ name: kthcloud-ci
   push:
     branches:
     - main
+  workflow_dispatch:
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -17,4 +18,4 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: registry.cloud.cbh.kth.se/deploy-3de025ba-ed43-43e0-ab50-03c04b7ef968/llama-prefetch
+        tags: ${{ secrets.DOCKER_TAG }}
