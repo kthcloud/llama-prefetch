@@ -4,6 +4,8 @@ import threading
 import requests
 import json
 from flask_cors import CORS
+import sys
+import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -14,6 +16,11 @@ body = json.dumps({"prompt": "This is a conversation between user and llama, a f
 latest_query = {"header": "Welcome to kthcloud",
                 "sub": "Start deploying your projects today"}
 fetching = False
+
+
+def log(message, level="INFO"):
+    iso = datetime.datetime.now().isoformat()
+    print(f"{iso} [{level}] {message}", file=sys.stderr)
 
 
 def fix_case(string):
@@ -33,13 +40,16 @@ def query():
 
     return json.dumps(latest_query)
 
+
 @app.route('/')
 def index():
     return "llama-prefetch"
 
+
 @app.route('/healthz')
 def healthz():
     return "ok"
+
 
 def fetch_query():
     global latest_query, fetching
@@ -54,13 +64,15 @@ def fetch_query():
         sub = fix_case(content['sub'])
 
         latest_query = {"header": header, "sub": sub}
+        log(f"Latest query: {latest_query}")
 
     except Exception as e:
-        print("Error fetching query ", e)
+        log(f"Error fetching query {e}", "ERROR")
     finally:
         fetching = False
 
 
 if __name__ == '__main__':
+    log("Starting server")
     fetch_query()
     app.run('0.0.0.0', 8080)
